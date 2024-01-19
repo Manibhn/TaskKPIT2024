@@ -1,1 +1,101 @@
-TaskKPIT2024
+
+public class BankWork {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Banking AccRamu= new Banking(101,"Ramu", 50000.0);
+		AccRamu.checkBalance();
+		AccRamu.Withdraw(30000.0);
+		AccRamu.checkBalance();
+		
+		SavingWork sonu= new SavingWork(102,"Sonu",75000.0,7.5);
+		sonu.SimpleIntrest();
+		sonu.checkBalance();
+
+		FixedDeposite fd= new FixedDeposite(105,"Gattu", 10000.0, 11.5,3);
+		fd.checkBalance();
+		fd.CompoundIntrest();
+		fd.Withdraw(1000);
+		fd.checkBalance();
+		fd.CompoundIntrest();
+//		
+		
+		System.out.println("--------------------------------------------------");
+		CreditWork Mani= new CreditWork(1009, "Manish", 100000.0,1, 5000.0);
+		Mani.CalculatecreditLimit();
+	}
+
+}
+class Banking{
+	int AccountNumber;
+	String AccountHolder;
+	Double AccountBalance;
+	
+	Banking(int x, String y, double z){
+		AccountNumber= x;
+		AccountHolder= y;
+		AccountBalance=z;
+		
+	}
+	void Withdraw(double x) {
+		AccountBalance-=x;
+		System.out.println(AccountHolder + " Withdrawing..."+x);
+	}
+	void Deposite(double x) {
+		AccountBalance+=x;
+		System.out.println("Deposite..."+x);
+	}
+	void checkBalance() {
+		System.out.println( AccountHolder+ " ...current Balance is : "+AccountBalance);
+	}
+	
+}
+
+class SavingWork extends Banking{
+	
+	double IntrestRate;
+	SavingWork(int a, String b, double c, double d){
+		super(a,b,c);
+		IntrestRate = d;
+		
+	}
+	
+	void SimpleIntrest() {
+		double si= (AccountBalance * 1*IntrestRate)/100;
+		System.out.println(AccountHolder +" SimpleIntrest is : "+ si);
+	}
+	void checkBalance() {
+	super.checkBalance();
+	}
+	
+	
+	
+}
+
+class FixedDeposite extends SavingWork{
+	int time;
+	FixedDeposite(int a,String b, double c, double d, int e ){
+		super(a,b,c,d);
+		time=e;
+	}
+	void CompoundIntrest() {
+		double ci= AccountBalance * Math.pow((1+ IntrestRate/100), time);
+		System.out.println("Curr Com Intrest : " + ci);
+	}
+	
+}
+class CreditWork extends SavingWork{
+	double cashLimit;
+	double creditLimit;
+	CreditWork(int a, String b, double c, double e,double f){
+		super(a,b,c,e);
+		cashLimit=f;
+		
+	}
+	//cash limit, credit limit
+	void CalculatecreditLimit() {
+		creditLimit= AccountBalance + cashLimit;
+		System.out.println(" credit limit : "+creditLimit);
+	}
+	
+}
