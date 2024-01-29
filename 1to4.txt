@@ -1,0 +1,515 @@
+import java.util.Random;
+
+public class Bike {
+public static void main(String[] args) {
+	MotorBike shotGun= null;
+	try {
+		shotGun= new MotorBike();
+		
+	}
+	catch(oilException oe) {
+		System.out.println("oil check kro "+oe.getMessage());
+	}
+	while(true) {
+		if(shotGun != null) {
+			try {
+				shotGun.startJourney();
+			}
+			catch(BreakFailException bfe) {
+				System.out.println("Break Fail ho gya hai "+ bfe.getMessage());
+			}
+			
+		}
+		else {
+			System.out.println("My bike is not ready");
+		}
+		
+		if(shotGun.distance==5) {
+			break;
+		}
+		else {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+}
+class BreakFailException extends RuntimeException{
+
+	public BreakFailException(String message) {
+		super(message);
+	}
+	
+}
+class oilException extends Exception{
+
+	public oilException(String message) {
+		super(message);
+	}
+	
+}
+class MotorBike
+{
+	boolean oilStatus;
+	boolean breakStatus;
+	int distance=1;
+	
+	void checkOil() {
+		Random random= new Random();
+		oilStatus= random.nextBoolean();
+		
+	}
+	void checkBreak() {
+		double breakM= Math.random()*100;
+		if(breakM>20) {
+			breakStatus= true;
+
+		}
+		else {
+			breakStatus= false;
+		}
+	}
+	
+	public MotorBike() throws oilException {
+		checkOil();
+		if(oilStatus) {
+			System.out.println("Bike is ready for the trip");
+		}
+		else {
+			throw new oilException("Refuel your Bike");
+		}
+	}
+	
+	void startJourney() {
+		for(int i=0; i<=5; i++) {
+			checkBreak();
+			if(breakStatus==false) {
+				throw new BreakFailException("Runtime Exception ....");
+			}
+			System.out.println("dist comp : "+ i);
+			distance =i;
+		}
+		System.out.println("Jpourney Completed");
+	}
+}
+---------------------------------------------------------------------------------------------------------------------------
+import java.util.Iterator;
+import java.util.TreeSet;
+class Pg {
+ 
+ public static void main(String[] args) {
+ TreeSet<Guest> vivaan= new TreeSet<Guest>();
+vivaan.add(new Guest(1,"Manish", 101));
+vivaan.add(new Guest(22,"Shivam", 102));
+vivaan.add(new Guest(13,"mamta", 103));
+vivaan.add(new Guest(4,"Satyam", 104));
+vivaan.add(new Guest(15,"Shiva", 105));
+    
+    Iterator<Guest> it= vivaan.iterator();
+    while(it.hasNext()){
+        Guest gt= it.next();
+        System.out.println("id :"+gt.id);
+        System.out.println("name :  "+gt.name);
+ 
+        System.out.println("roomNo :"+gt.roomNo);
+ 
+    
+        }
+    }
+}
+ 
+class Guest implements Comparable<Guest>{
+int id;
+String name;
+int roomNo;
+public Guest(int id, String name, int roomNo) {
+    this.id = id;
+    this.name = name;
+    this.roomNo = roomNo;
+}
+@Override
+public String toString() {
+    return "Guest [id=" + id + ", name=" + name + ", roomNo=" + roomNo + "]";
+}
+
+
+@Override
+public int compareTo(Guest o) {
+	// TODO Auto-generated method stub
+	return Integer.compare(id, o.id);
+}
+
+}
+ 
+
+---------------------------------------------------------------------------------------------------------------------------
+package crud;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class selectQ {
+	public static void main(String[] args) {
+		try {
+			DriverManager.registerDriver(new  org.hsqldb.jdbc.JDBCDriver());
+			Connection conn= DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb", "SA", "");
+			Statement st= conn.createStatement();
+			
+			ResultSet rs= st.executeQuery("Select * from Mani");
+			while(rs.next()) {
+				System.out.println("id: "+rs.getInt(1));
+				System.out.println("Name : "+rs.getString(2));
+				System.out.println("Subject :" + rs.getString(3));
+				
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+}
+
+
+-------------------------------------------------------------------------------------------------------------
+package crud;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+
+public class InsertQ{
+	public static void main(String[] args) {
+		
+	
+	try {
+		DriverManager.registerDriver(new org.hsqldb.jdbc.JDBCDriver());
+		Connection conn= DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb", "SA", "");
+		Statement st=conn.createStatement();
+		System.out.println("Enter Details");
+		Scanner sc= new Scanner(System.in);
+		int id= sc.nextInt();
+		Scanner sc2= new Scanner(System.in);
+		String name= sc2.nextLine();
+		Scanner sc3= new Scanner(System.in);
+		String subject= sc3.nextLine();
+		
+		PreparedStatement pst= conn.prepareStatement("Insert into Mani values (?,?,?)");
+		pst.setInt(1, id);
+		pst.setString(2, name);
+		pst.setString(3, subject);
+		
+		int rows= pst.executeUpdate();
+		System.out.println("row inserted "+ rows);
+		
+		
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
+}
+
+-------------------------------------------------------------------------------------------------------------
+package crud;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class SelectWhereQ {
+public static void main(String[] args) {
+	try {
+		
+		DriverManager.registerDriver(new org.hsqldb.jdbc.JDBCDriver());
+		Connection conn= DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb", "SA", "");
+		Statement st= conn.createStatement();
+		
+//		update krna hai to output bhi to loge naa
+		System.out.println("Enter id to update");
+		Scanner sc= new Scanner(System.in);
+		int id= sc.nextInt();
+		
+		ResultSet rs= st.executeQuery("Select * from mani where id="+"'"+id+"'");
+		
+		while(rs.next()) {
+			System.out.println("id : "+rs.getInt(1));
+			System.out.println("name : "+rs.getString(2));
+			System.out.println("subject "+rs.getString(3));
+			
+		}
+		
+
+		
+		
+		
+				} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+}
+}
+-------------------------------------------------------------------------------------------------------------------
+
+package crud;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class UpdateQ {
+public static void main(String[] args) {
+	try {
+		DriverManager.registerDriver(new org.hsqldb.jdbc.JDBCDriver());
+		Connection conn= DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb", "SA", "");
+		Statement st= conn.createStatement();
+		
+//		update krna hai to output bhi to loge naa
+		System.out.println("Enter id to update");
+		Scanner sc= new Scanner(System.in);
+		int id= sc.nextInt();
+		System.out.println("Enter name to update");
+		Scanner sc1= new Scanner(System.in);
+		String name= sc1.nextLine();
+		System.out.println("Enter subject to update");
+		Scanner sc2= new Scanner(System.in);
+		String Subject= sc2.nextLine();
+		
+		PreparedStatement pst= conn.prepareStatement("update  mani set  name=?,subject=? where id=?");
+		pst.setString(1, name);
+		pst.setString(2, Subject);
+		pst.setInt(3, id);
+
+		
+		int rows= pst.executeUpdate();
+		System.out.println("Row updated "+rows);
+		pst.close();
+		conn.close();
+		
+				} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+}
+}
+-----------------------------------------------------------------------------------------------------------------
+package crud;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+public class DeleteQ {
+	public static void main(String[] args) {
+		try {
+			
+		DriverManager.registerDriver(new org.hsqldb.jdbc.JDBCDriver());
+		Connection conn= DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb", "SA", "");
+		Statement st= conn.createStatement();
+		
+//		update krna hai to output bhi to loge naa
+		System.out.println("Enter id to delete");
+		Scanner sc= new Scanner(System.in);
+		int id= sc.nextInt();
+		
+		
+		PreparedStatement pst= conn.prepareStatement("Delete from  mani  where id=?");
+		pst.setInt(1, id);
+		
+
+		
+		int rows= pst.executeUpdate();
+		System.out.println("Row deleted "+rows);
+		pst.close();
+		conn.close();
+		
+				} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	}
+
+}
+---------------------------------------------------------------------------------------------------------------
+
+Entity->class->pojo
+package entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="emp_tbl")
+public class Employee {
+	@Id
+	@Column(name="empno")
+	private int employeeNumber;
+	@Column(name="empnam")
+	private String employeeName;
+	@Column(name="empSal")
+	private int employeeSalary;
+	public Employee() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public int getEmployeeNumber() {
+		return employeeNumber;
+	}
+	public void setEmployeeNumber(int employeeNumber) {
+		this.employeeNumber = employeeNumber;
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+	public int getEmployeeSalary() {
+		return employeeSalary;
+	}
+	public void setEmployeeSalary(int employeeSalary) {
+		this.employeeSalary = employeeSalary;
+	}
+	
+	
+
+}
+................................................
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import entity.Employee;
+
+public class EmployeeTesting {
+	EntityManager manager;
+	
+	public EmployeeTesting() {
+EntityManagerFactory factory= Persistence.createEntityManagerFactory("MyJPA");
+manager= factory.createEntityManager();
+System.out.println("manager Created : "+manager);
+
+	}
+	
+	@Test
+	public void createEmployeeTable() {
+		System.out.println("Trying to create table!!!");
+		EntityTransaction trans= manager.getTransaction();
+		trans.begin();
+			Employee emp= new Employee();
+			emp.setEmployeeNumber(101);
+			emp.setEmployeeName("Mandira");
+			emp.setEmployeeSalary(10000);
+		manager.persist(emp);
+		trans.commit();
+		System.out.println("Object created !!");
+		
+		
+	}
+	
+	@Test
+	public void selectEmployeeTable() {
+		System.out.println("Trying to read table!!!");
+			Employee emp= manager.find(Employee.class,101);
+			Assertions.assertTrue(emp!=null);
+			System.out.println("employee Number : "+emp.getEmployeeNumber());
+			System.out.println("Employee Name : "+emp.getEmployeeName());
+			System.out.println("Employee Sal : "+ emp.getEmployeeSalary());
+			
+		System.out.println("Object retrived !!");
+		
+		
+	}
+	
+	@Test
+	public void selectAllEmployeeTable() {
+		System.out.println("Trying to read all the data of table!!!");
+			Query query=manager.createQuery("from Employee");
+			
+			
+			Assertions.assertTrue(query!=null);
+			List<Employee> dataList=query.getResultList();
+			for(Employee emp: dataList) {
+				System.out.println("Empl");
+			
+			
+			System.out.println("employee Number : "+emp.getEmployeeNumber());
+			System.out.println("Employee Name : "+emp.getEmployeeName());
+			System.out.println("Employee Sal : "+ emp.getEmployeeSalary());
+			}
+			
+		System.out.println(" all Object retrived !!");
+		
+		
+	}
+	@Test
+	public void updateEmployeeTable() {
+		System.out.println("Trying to update table!!!");
+		
+		EntityTransaction trans= manager.getTransaction();
+		trans.begin();
+			Employee emp= manager.find(Employee.class, 101);
+			Assertions.assertTrue(emp!=null);
+			
+			emp.setEmployeeNumber(101);
+			emp.setEmployeeName("Mandira");
+			emp.setEmployeeSalary(10000);
+		manager.merge(emp);
+		trans.commit();
+		System.out.println("Object updated !!");
+		
+		
+	}
+	@Test
+	public void deleteEmployeeTable() {
+		System.out.println("Trying to delete table!!!");
+		
+		EntityTransaction trans= manager.getTransaction();
+		trans.begin();
+			Employee emp= manager.find(Employee.class, 101);
+			Assertions.assertTrue(emp!=null);
+			
+			
+		manager.remove(emp);
+		trans.commit();
+		System.out.println("Object updated !!");
+		
+		
+	}
+
+}
